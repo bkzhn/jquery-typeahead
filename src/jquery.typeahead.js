@@ -882,7 +882,15 @@
 
             // Fixes #105 Allow user to define their beforeSend function.
             // Fixes #181 IE8 incompatibility
-            xhrObject.request = $.extend(true, xhrObject.request, groupRequest/*, {beforeSend: xhrObject.request.beforeSend}*/);
+            xhrObject.request = $.extend(
+                true,
+                {
+                    // Fixes #271 Data is cached inside the xhrObject
+                    data: Object.freeze(groupRequest.data || {})
+                },
+                xhrObject.request,
+                groupRequest
+            );
 
             // JSONP needs a unique jsonpCallback to run concurrently
             if (xhrObject.request.dataType.toLowerCase() === 'jsonp' && !xhrObject.request.jsonpCallback) {
